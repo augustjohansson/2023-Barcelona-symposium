@@ -1,0 +1,631 @@
+\documentclass{beamer}
+
+\usetheme{sintef}
+\titlebackground*{images/default}
+\usefonttheme[onlymath]{serif}
+\setbeamertemplate{footline}[frame number]
+
+\usepackage{amsmath,mathtools,bm}
+\usepackage{caption}
+\usepackage{subcaption}
+%\usepackage{dingbat} % for checkmark
+\usepackage{enumerate}
+
+%% \usepackage{xcolor}
+%% \usepackage{hyperref}
+%% \hypersetup{colorlinks=true,
+%%   linkcolor=black,
+%%   urlcolor=black,
+% }
+%\urlstyle{same}
+
+\usepackage{xcolor}
+\definecolor{orangeish}{HTML}{FFDF42}
+\definecolor{greenish}{HTML}{00A64F}
+
+\hypersetup{colorlinks,linkcolor=,urlcolor=sintefblue}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,calc,arrows.meta,angles}
+
+\def\green #1{\color{greenish}#1}
+\def\yellow #1{\color{orangeish}#1}
+\def\red #1{\color{red}#1}
+
+%% \def\itemdot{\item[$\circ$]}
+
+\newcommand*{\ditto}{\texttt{\char`\"}}
+\newcommand{\norm}[1]{\left\Vert#1\right\Vert}
+\newcommand{\ad}[1]{\langle #1 \rangle}
+
+\newcommand{\fracpar}[2]{\frac{\partial #1}{\partial #2}}
+%\newcommand{\grad}{\Vec{\nabla}}
+\newcommand{\grad}{\nabla}
+\newcommand{\dive}{\grad\cdot }
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\tens}[1]{\boldsymbol{\mathsf{#1}}}
+\newcommand{\upw}{\mathsf{upw}}
+\renewcommand{\d}{\,\mathrm{d}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\res}{\mathcal{R}}
+\newcommand{\acc}{\mathcal{A}}
+\newcommand{\flux}{\mathcal{F}}
+\newcommand{\src}{\mathcal{Q}}
+\newcommand{\neigh}{\mathcal{N}}
+\newcommand{\downstr}{\mathcal{D}}
+\newcommand{\upstr}{\mathcal{U}}
+\newcommand{\ncell}{n_c}
+\newcommand{\ndof}{n_{\mathrm{dof}}}
+\newcommand{\cell}{\Omega}
+\newcommand{\face}{\Gamma}
+
+\newcommand{\Nvec}{\vec{N}}
+\newcommand{\jvec}{\vec{j}}
+\newcommand{\abs}[1]{\left| #1\right|}
+
+
+\newcommand{\cli}{c_{\text{Li}^+}}
+\newcommand{\Nli}{N_{\text{Li}^+}}
+\newcommand{\tli}{t_{\text{Li}^+}}
+\newcommand{\zli}{z_{\text{Li}^+}}
+\newcommand{\phili}{\phi_{\text{Li}^+}}
+\newcommand{\vecNli}{\vec{N}_{\text{Li}^+}}
+\newcommand{\dotsli}{\dot{s}_{\text{Li}^+}}
+\newcommand{\Dlieff}{D_{\text{Li}^+}^{\text{eff}}}
+\newcommand{\kappalieff}{\kappa_{\text{Li}^+}^{\text{eff}}}
+
+\title{\large{Electrochemical-thermal simulations in 3D using BattMo, the Battery Modelling Toolbox}}
+\subtitle{\ \\ \ \\}
+\date{ LC-BAT-5 Cluster Scientific Symposium on Gen 3bBatteries Barcelona 2023-11-29}
+\author{%
+  {\bf August Johansson},  Halvor Nilsen, Xavier Raynaud, Francesca Watson\\
+  SINTEF Digital\\
+  \vspace{1mm}
+  Simon Clark, Eibar Flores, Lorena Hendrix\\
+  \vspace{-4pt}
+  SINTEF Industry}
+
+\begin{document}
+
+{
+  \setbeamertemplate{footline}{}
+  \maketitle
+}
+
+
+%% \begin{frame}{Physics based battery simulations}
+
+%%   Why?
+%%   \begin{itemize}
+%%   \item Good understanding of physical processes.
+%%   \item Effect of parameters.
+%%   \item Simulation based design, optimization and testing.
+%%   \end{itemize}
+
+%%   \ \\
+
+%%   But:
+%%   \begin{itemize}
+%%   \item Difficult for users to get to grips with (need a simulation expert).
+%%   \item Difficult to adapt to new setups (geometries, chemistries etc.).
+%%   \item Expensive if using commercial software.
+%%   \end{itemize}
+
+%% \end{frame}
+
+\begin{frame}{BattMo: An open-source continuum modeling framework for electrochemical devices}
+
+\footnotesize
+
+  \begin{columns}
+    \begin{column}{0.6\linewidth}
+      \begin{itemize}
+      \item Doyle-Fuller-Newman
+      \item PxD, x = 2,3,4 % macroscopic and microscopic
+      \item Butler-Volmer kinetics % Could probably be changed, but not through JSON files yet
+      \item Fully coupled electrochemical -- thermal simulation
+      \item Chemistry neutral: Li-ion batteries (LFP, NMC, LNMO, ...), electrolysers for hydrogen production, seawater systems, etc
+      \item Geometry neutral: multilayer pouch cells, jelly roll cells, race track cells, coin cells, etc
+        %% \item Easy to use, easy to adapt, accurate, fast and free.
+      \item Open-source implementations in MATLAB and Julia
+      \item At GitHub or \url{www.batterymodel.com}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\linewidth}
+      \centering
+      %\hspace{-0.5cm}\includegraphics[width=0.7\linewidth]{./images/BattMo_Logo_stacked-crop.png}
+      \includegraphics[width=0.6\linewidth]{./images/BattMo_Logo_stacked-crop.png}
+
+      \vspace{1cm}
+
+      \includegraphics[width=0.99\linewidth]{./images/hydralogo.png}
+
+    %\includegraphics[width=0.8\linewidth]{./images/battmo-pillar.png}
+    \end{column}
+  \end{columns}
+
+  %\centering
+
+  %% \vspace{0.75cm}
+
+  %% \centering
+  %% %\href{https://batterymodel.com}{\color{sintefblue}{https://batterymodel.com}}
+
+  %% \url{github.com/BattMoTeam/BattMo}
+
+\end{frame}
+
+
+\begin{frame}{Continuum model}
+
+  \begin{itemize}
+  \item On a continuum level, the state of an electrochemical system is described by
+    \begin{itemize}
+    \item Concentration of species $i$, $c_i$
+    \item Electric potential $\varphi$
+    \item Temperature $T$
+    \end{itemize}
+  \item These can be determined by conservation laws, namely the
+    continuity equations for {\bf mass}, {\bf charge} and {\bf energy},
+    all of the form
+    \begin{align*}
+  &    \frac{\partial u}{\partial t} + \nabla \cdot \vec{N} = \dot{s} \\
+   &   \text{boundary conditions}
+    \end{align*}
+  \item Mass flux term $\vec{N}$ describe transport %(diffusion and migration)
+  \item Source term $\dot{s}$ describe reactions %(thermodynamic and kinetics)
+  \item Have these PDEs for each macroscopic component, plus diffusion in the microscale.
+  \end{itemize}
+
+\end{frame}
+
+%% % From slides2
+%% \begin{frame}{Example: single-component, non-isothermal model of the electrolyte}
+
+%%   \footnotesize
+%%   \begin{itemize}
+%%   \item The mass and charge conservation equations are
+%%     \begin{align*}
+%%       \fracpar{c}{t} + \dive \Nvec_+ &= 0 \\
+%%       \dive \jvec &= 0
+%%     \end{align*}
+%%   \item The mass flux is driven by both {\bf diffusion} and {\bf migration}
+%%     \begin{equation*}
+%%       \Nvec_+ = - D\grad c + \frac{t_+}{z_+F}\, \jvec
+%%     \end{equation*}
+%%     where the current density can be approximated as
+%%     \begin{equation*}
+%%       \jvec = -\kappa\grad\varphi - \kappa\frac{t_+ - 1}{z_+F}\left(\fracpar{\mu}{c}\right)\grad c + \frac{1}{z_+F}\left(\fracpar{\mu}{T}\right)\grad T
+%%     \end{equation*}
+%%   \item  The equation for the temperature can be derived from non-equilibrium thermodynamics
+%%     \begin{equation*}
+%%       c_{p}\rho\fracpar{T}{t} = \dive(\lambda\grad T)+\frac{|\,\jvec  \,|^2}{\kappa} + \left(\frac{\partial \mu}{\partial c}\right)\frac{\abs{D\grad{c}}^2}{D}
+%%     \end{equation*}
+%%   \item The diffusion $D$, electric and thermal conductivities $\kappa$ and $\lambda$ may depend on the state of the system.
+%%   \end{itemize}
+
+%% \end{frame}
+
+
+%% \begin{frame}{Electrochemical continuum models}
+
+%%   \begin{itemize}
+%%   \item The state of the electrolyte is described by $(\cli, \phili, T)$
+%%   \item The continuity equation for mass is
+%%     \begin{align*}
+%%       \fracpar{(\cli \varepsilon_l)}{t} + \dive \vecNli &= \dotsli
+%%     \end{align*}
+%%     where both diffusion and migration drives the transport:
+%%     \begin{align*}
+%%       \vecNli &= -\Dlieff \grad \cli + \frac{\tli}{\zli F}\, j_l
+%%       j_l &=
+%%     \end{align*}
+%%   \end{itemize}
+
+%%   \begin{align*}
+%%     \label{eq:massconselyte}
+%%     \fracpar{(\cli \varepsilon_l)}{t} + \dive \vecNli &= 0 \\
+%%     \dive \Vec{j} &= 0
+%%   \end{align*}
+%%   where the mass flux and current density are
+%%   \begin{align*}
+%%     \vecNli &= - D_e\grad c_e + \frac{\tli}{\zli F} \, \Vec{j} \\
+%%     \Vec{j} &= -\kappa \grad \phili - \kappa \frac{1 - \tli}{\zli F} \left(\fracpar{\mu}{\cli}\right)\grad \cli
+%%   \end{align*}
+
+%% \end{frame}
+
+
+\begin{frame}{BattMo = MATLAB Reservoir Simulation Toolbox + electrochemistry expertise}
+  \footnotesize
+
+  \begin{columns}
+    \begin{column}{0.6\linewidth}
+      \centering
+
+      \ \\
+
+      %\hspace{-0.8cm}\includegraphics[width=0.4\linewidth]{./images/mrst-crop.png}
+      %\hspace{1.cm}
+      %\vspace{0.25cm}
+      \begin{itemize}
+      \item Available at \url{www.mrst.no} and GitHub
+      \item Experience with commercial use of open-source software
+      \item Conservative, monotone finite volume schemes
+      \item Robust Newton solvers
+      \item General 3D grids
+      \item Adjoint-based optimization
+      \item Automatic differentiation (AD):
+      \begin{align*}
+        \ad{f, df} + \ad{g, dg} &= \ad{f+g, df+dg} \\
+        \ad{f, df} \cdot \ad{g, dg} &= \ad{f\,g,\, f\, dg + g\, df} \\
+        \exp({\ad{f,df}}) &= \ad{\exp({f}), \, df \exp({f})}
+      \end{align*}
+      \end{itemize}
+    \end{column}
+    %\vrule{}
+    \begin{column}{0.4\linewidth}
+      \centering
+
+      %\vspace{0.5cm}
+      \includegraphics[width=0.7\linewidth]{./images/mrst-crop.png}
+
+       \vspace{0.5cm}
+
+       \includegraphics[width=0.6\linewidth]{./images/battmo-pillar.png}
+      \includegraphics[width=0.5\linewidth]{./images/battmotext.png}
+
+
+
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+
+\begin{frame}{Implementations in MATLAB and Julia}
+
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      {\bf BattMo} (MATLAB/GNU Octave)
+      \begin{itemize}
+      \item Mature version
+      \item Includes temperature effects, electrolyzers, etc
+      \item Large overhead for smaller models
+      \item Need a MATLAB licence (although Octave typically works with performance loss)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.55\textwidth}
+      %% \begin{center}
+      %%   \includegraphics[width=0.5\linewidth]{./images/julialogo.png}
+      %% \end{center}
+      {\bf BattMo.jl} (Julia)
+      \begin{itemize}
+      \item Julia is a free and open-source programming language. JIT-compiled like MATLAB \& Python, but with speed of C.
+      \item Fewer features (eg.\ no thermal yet)
+      \item Faster simulation times, particularly for small (P2D) models (10x)
+      \item Currently uses model setup from MATLAB/Octave.
+      \item \texttt{Using Pkg; Pkg.add(\ditto BattMo\ditto)}
+      %\item \url{www.github.com/BattMoTeam/BattMo.jl}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%% \begin{frame}{BattMo implementation}
+
+%%   \begin{columns}
+%%     \begin{column}{0.5\textwidth}
+%%       \begin{itemize}
+%%       \item AD - automatic differentiation
+%%       \item Advanced unstructured gridding and visualisation
+%%       \item Gradient based optimisation inbuilt
+%%       \item MATLAB: easy syntax, nice debugger, great for prototyping
+%%       \item Open-source:  easy to see what's going on in the code
+%%       \item MATLAB + open-source: easy to adapt to new chemistries
+%%       \end{itemize}
+%%     \end{column}
+%%     \begin{column}{0.5\textwidth}
+%%       AD fig; gridding; optimization \& calibration is the same thing
+%%     \end{column}
+%%   \end{columns}
+
+%% \end{frame}
+
+\begin{frame}{Using BattMo}
+
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \begin{itemize}
+      \item JSON based input format -- code mimics JSON structure
+        % Code is modular and chemistry independent to minimize changes not covered by JSON schemas.
+      \item Library of JSON files for various electrodes, separators, materials etc provided  % because parameterization takes a lot of work
+      \item Actively working with the Battery Interface Ontology for describing the data
+      %% \item HDF5 output
+      %% \item Data described by the Battery Interface Ontology (BattINFO)\footnote{Eibar Flores A01-0112 - Semantic Technologies to Model Battery Data and Knowledge, Wed.\ 17.40}
+      \item Documentation and example
+        tutorials to get started with
+      \item Possible to deploy in the cloud
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.7\textwidth}
+      \centering
+      \includegraphics[width=1.1\linewidth]{./images/gui.png}
+      \footnotesize
+      Web-based GUI in progress (deliverable Nov 2023!)
+    \end{column}
+  \end{columns}
+
+%% \vspace{1cm}
+
+%%   \centering
+%%   %\href{https://batterymodel.com}{\color{sintefblue}{https://batterymodel.com}}
+%%   \url{https://batterymodel.com}\hspace{1cm}
+%%   \url{https://github.com/BattMoTeam/BattMo}
+
+
+\end{frame}
+
+
+
+%% \begin{frame}{JSON format mimics implementation}
+
+%%   \vspace{2mm}
+
+%%   \centering
+%%   \includegraphics[width=0.8\linewidth]{./images/classes.png}
+
+%%   \footnotesize
+%%   \begin{itemize}
+%%   \item Code is modular and chemistry independent to minimize changes not covered by JSON schemas.
+%%   \item A graph-based visualization tool can show how data is passed.
+%%   \end{itemize}
+
+%% \end{frame}
+
+\begin{frame}{Comparison with other frameworks}
+
+  % pybamm faster than Matlab battmo, but slower than julia battmmo
+
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item Good agreement with PyBaMM\footnotemark \
+        using the Chen 2020 model\footnotemark \ (isothermal, NMC 811 / SiGr).
+      \item For some applications P2D is adequate.
+      \item For some applications, richer spatial fidelity is of importance.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=0.99\linewidth]{./images/pybamm.png}
+    \end{column}
+  \end{columns}
+
+\footnotetext[1]{Sulzer, et al.(2021). Journal of Open Research Software,9 (1), 14}
+\footnotetext[2]{Chen et al 2020 J. Electrochem. Soc. 167 080534}
+
+\end{frame}
+
+\begin{frame}{Example: Multilayer LFP pouch cell (5 layers)}
+
+  \centering
+  \includegraphics[width=0.47\linewidth]{./images/lfpgrid1.png}\hspace{0.5cm}
+  \includegraphics[width=0.47\linewidth]{./images/lfpgrid2.png}
+
+\end{frame}
+
+\begin{frame}{How does the temperature behave when increasing the number of layers?}
+
+  \begin{figure}
+    \centering
+    \hspace{-10mm}
+    \begin{subfigure}[b]{0.35\linewidth}
+      \centering
+      \includegraphics[width=\linewidth]{./images/lfptemp1.png}
+      \caption{5 layers}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.35\linewidth}
+      \centering
+      \includegraphics[width=\linewidth]{./images/lfptemp2.png}
+      \caption{10 layers}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.35\linewidth}
+      \centering
+      \includegraphics[width=\linewidth]{./images/lfptemp3.png}
+      \caption{100 layers}
+    \end{subfigure}
+  \end{figure}
+
+\end{frame}
+
+%% \begin{frame}{4680 Jelly roll cell}
+
+%%   \centering
+%%   %\includegraphics[width=0.2\linewidth]{./images/fullcellgeo.png}
+%%   \includegraphics[width=0.2\linewidth]{./images/tabs.png}\hspace{0.5cm}
+%%   \includegraphics[width=0.35\linewidth]{./images/fullgridZoomTop.png}\hspace{0.65cm}
+%%   %\includegraphics[width=0.3\linewidth]{./images/temperature.png}
+%%   \includegraphics[width=0.25\linewidth]{./images/temperature-top-crop.png}
+%%   %\includegraphics[width=0.25\linewidth]{./images/temperature-side-crop.png}
+
+%%   % Easy to test effect of various tab configurations
+
+%%   \begin{itemize}
+%%   \item 100k cells and 468k degrees of freedom
+%%   \item Good preconditioners is critical for performance when solving large problems
+%%   \end{itemize}
+
+%% \end{frame}
+
+
+\begin{frame}{Calibration and optimization: Same mathematics!}
+
+  \begin{itemize}
+  \item  Example of calibration (data assimilation, fitting, parameterization) problem:
+    Minimize the difference between the experimental and
+    simulated discharge curve
+    \begin{align*}
+      J(p) = \int_0^T |E(p) - E_\text{exp}|^2 \ dt
+    \end{align*}
+  \item Example of optimization problem: Maximize the specific energy
+    \begin{align*}
+      J(p) = \frac{1}{m(p)} \int_0^T E(p)I  \  dt
+    \end{align*}
+  \item In both cases we (basically) want to find
+  \begin{align*}
+    p^* = \arg \min_p J(p)
+  \end{align*}
+  \item This is an optimization problem.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{How does one solve the optimization problem most effectively?}
+
+  \begin{itemize}
+  \item {\bf Gradient-based optimization} are for problems when
+    evaluating the system is costly (large, time-dependent,
+    nonlinear).
+  \item How the sensitivities  $\nabla_p\, J(p)$ look like require inside information of the
+    solver (AD).
+  \item If we have a black-box solver, we could use a finite difference approximation, but this scales proportionally to the number of parameters.
+    {\bf Unfeasible} for large problems and/or many parameters.
+  \item The adjoint approach yield a computational cost {\bf independent}
+    of the number of parameters.
+  \item Adjoint approach provide {\bf general systematic framework} for optimization
+    and calibration.
+  \end{itemize}
+
+\end{frame}
+
+%% \begin{frame}{Calibration and optimization: Same mathematics!}
+%%   \footnotesize
+
+%%   \vspace{3mm}
+
+%%   Choose an objective function, eg.\ if $E$ is the
+%% cell voltage, $I$ a discharge current and $m$ is the mass of the cell,
+%%   \begin{itemize}
+%%     \item {\bf Calibration}: Minimize the difference between the experimental and
+%%       simulated discharge curve
+%%       \begin{align*}
+%%         \int_0^T |E(p) - E_\text{exp}|^2 \ dt
+%%       \end{align*}
+%%     \item {\bf Optimization}: Maximize the specific energy
+%%       \begin{align*}
+%%         \frac{1}{m(p)} \int_0^T E(p)I  \  dt
+%%       \end{align*}
+%%   \end{itemize}
+
+%% \  \\
+
+%% Given an initial guess, loop until the objective does not change:
+%%   \begin{enumerate}
+%%   \item Compute of the objective function (requires a full simulation) for the current $p$.
+%%   \item Compute of the gradient of the objective function with respect to $p$ (using AD).
+%%   \item Use the gradient to {\bf find the optimum direction} to search in for new $p$.
+%%   \end{enumerate}
+
+%% \end{frame}
+
+
+\begin{frame}{Electrode calibration in practice: exploit the possibility to split the parameter space}
+\footnotesize
+  1. Calibrate equilibrium parameters using {\bf low C} discharge curves.
+
+  \begin{itemize}
+  \item Neglect diffusion and transport processes as they are instantaneous.
+  \item Assume uniform electrode concentration, only dependent on time.
+  \item Fit thermodynamic parameters eg.\ stoichiometry at fully charged state, active material volume fraction, maximum Li conc.\ by solving an gradient-based optimization problem.
+  \item Cheap, since no PxD solve is needed.
+  \end{itemize}
+
+\ \\
+
+  2. Calibrate rate parameters using {\bf high C} discharge curves.
+
+  \begin{itemize}
+  \item Use parameters from the low-rate calibration (1).
+  \item Use the optimization framework to fit parameters (eg.\ volumetric surface area, electrical conductivity) % grids in progress
+  \item This is a PDE-constrained optimization problem.
+  \item Adjoint-based optimization critical in the case of many parameters.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Calibration of an LNMO cell}
+
+  % \centering
+  %% \includegraphics[width=0.47\linewidth]{./images/h1.png}\hspace{0.5cm}
+  %% \includegraphics[width=0.47\linewidth]{./images/h2.png}
+
+  \begin{figure}
+    \centering
+    \captionsetup[subfigure]{justification=centering}
+    %\hspace{-10mm}
+    \begin{subfigure}[]{0.45\linewidth}
+      \centering
+      \includegraphics[width=\linewidth]{./images/h1.png}
+      \caption{Discharge at 0.05 C. Calibration under equilibrium condition approximation.}
+    \end{subfigure}
+    \begin{subfigure}[]{0.45\linewidth}
+      \centering
+      \includegraphics[width=\linewidth]{./images/h2.png}
+      \caption{Discharge at 2 C. Calibration with adjoint-based gradient optimization. }
+    \end{subfigure}
+  \end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}{Conclusions}
+
+\footnotesize
+
+\begin{columns}%[T]
+  \begin{column}{0.6\linewidth}
+    \begin{itemize}
+    \item {\bf BattMo} is a framework for primarily PxD type of electrochemical --thermal systems
+    \item MATLAB and Julia
+    \item Flexible chemistry and geometry
+    \item Tutorial and library of JSON data files provided
+    \item Efficient parameterization and calibration
+    \item Freely available at GitHub and \url{www.batterymodel.com}
+    \item Experienced in commercial use of open-source software
+    \item Interested in collaborations and contributors!
+    \end{itemize}
+  \end{column}
+  \begin{column}{0.4\linewidth}
+    \centering
+    \includegraphics[width=0.6\linewidth]{./images/BattMo_Logo_stacked-crop.png}
+    \scriptsize
+  \end{column}
+\end{columns}
+
+\vspace{0.5cm}
+
+{
+\tiny
+%\includegraphics[width=0.25\linewidth]{images/EN_Co-fundedbytheEU_RGB_POS.png}
+\includegraphics[width=0.25\linewidth]{images/EN_FundedbytheEU_RGB_POS.png}
+
+This project has received funding from the European Union’s Horizon
+2020 innovation programme under number:
+\begin{itemize}
+\item 957189 Battery interface genome and materials acceleration platform (BIG-MAP)
+\item 875527 Hybrid power-energy electrodes for next generation lithium-ion batteries (HYDRA)
+\item 101104013 Battery management by multi-domain digital twins (BATMAX)
+\end{itemize}
+}
+
+
+\end{frame}
+
+\backmatter
+
+
+\end{document}

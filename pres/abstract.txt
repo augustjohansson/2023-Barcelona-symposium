@@ -1,0 +1,33 @@
+Thermo-electrochemical simulation of large-format Li-ion cells in 3D using the Battery Modelling Toolbox (BattMo)
+
+
+An overview of BattMo: The Battery Modelling Toolbox 
+
+
+Oscar Bolzinger
+
+Simon Clark 
+
+Eibar Flores 
+
+August Johansson 
+
+Halvor Nilsen 
+
+Xavier Raynaud 
+
+Francesca Watson 
+
+SINTEF
+
+Computer-based modelling and simulation can be a valuable tool when developing electrochemical devices: it offers possibilities for insight into internal properties not available in experiments, it can guide the development and testing of new materials in the device, it can provide time-efficient alternatives for optimizing operating procedures, and more. In this contribution we will give an overview of the Battery Modelling Toolbox (BattMo), which is an open-source framework for continuum modelling of electrochemical-thermal systems. It has been primarily developed for the modelling and simulation of Li-ion battery cells using pseudo X-dimensional (PXD, X=2,3,4) Doyle-Fuller-Newman models, but has also successfully been applied to electrolyzers. BattMo is developed in MATLAB and has a high-performance Julia version (BattMo.jl) in development.
+
+The fundamental equations of mass, charge and energy conservation are in BattMo discretized using a low-order implicit finite volume method. These are suitable methods, since they are conservative (meaning that mass, charge, etc., are conserved), and guarantee monotone solutions (meaning that the solutions will be positive if the data is positive). These properties provide a simulation foundation that is robust and stable also on complex 3D grids -- essential features when modelling real-world systems. As with most numerical methods, the most time-consuming part is to solve the resulting linear system of equations. In BattMo we make use of state-of-the-art block-wise multigrid methods to obtain high performance.
+
+Working with BattMo may be done using a GUI, which generates a json file which completely specifies a simulation. This json file can be used directly as input to BattMo via the MATLAB/Julia prompt, or used in cloud resources. It is also possible to use a json file as a base configuration and modify the parameters manually or programmatically, for example to investigate a specific system response when changing some parameters of interest. BattMo also provides functionality for automatic gradient-based optimization and parameter estimation that can be used for maximizing or minimizing some goal quantity, and matching to experimental data. A key component for performing efficient gradient-based optimization and parameter estimation in the case of many parameters (for example when having one parameter value in each grid cell) is the use of so-called adjoints. Using adjoints allow for the gradients in the sensitivity analysis to be computed with a constant cost that is independent on the number of parameters, thus avoiding the curse of dimensionality.
+
+Much attention is spent on making the BattMo json input compatible with other simulation frameworks such as PyBamm, COMSOL and CideMod. This is to accelerate research and development by taking advantage of the strengths of different packages, as well as providing not only reproducible but also reliable science. BattMo is developed alongside BattINFO, which is a battery interface ontology based on EMMO (Elementary Multiperspective Material Ontology) that is developed in the BIG-MAP EU H2020 project. We also seek to support the BPX standard developed by the PyBamm team.
+
+In this talk we will overview the basic features of BattMo and see how the modular approach used in the software simplifies development of new models. BattMo contains many examples, and we will here present thermal simulation of 1D and 3D cells with LFP and LNMO battery chemistries in pouch cell format and investigate the effects of the tabless design in the 4680 cylindrical cell format (see the Figure below). 
+
+BattMo is available at https://github.com/BattMoTeam and is developed with the support from the EU H2020 innovation programs under the grants Hydra (875527) and BIG-MAP (957189).
