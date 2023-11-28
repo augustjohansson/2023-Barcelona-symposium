@@ -1,5 +1,9 @@
 %% Composite Silicon Graphite electrode
 
+clear all
+%close all
+
+
 %% Import the required modules from MRST
 % load MRST modules
 mrstModule add ad-core matlab_bgl
@@ -54,8 +58,10 @@ paramobj = BatteryInputParams(jsonstruct);
 % We set the mass fractions of the different material in the coating of the negative electrode. This information could
 % have been passed in the json file earlier (:ref:`compositeElectrode`)
 
-paramobj.(ne).(co).(am1).massFraction = 0.9;
-paramobj.(ne).(co).(am2).massFraction = 0.08;
+% paramobj.(ne).(co).(am1).massFraction = 0.9;
+% paramobj.(ne).(co).(am2).massFraction = 0.08;
+paramobj.(ne).(co).(am1).massFraction = 0.7;
+paramobj.(ne).(co).(am2).massFraction = 0.28;
 paramobj.(ne).(co).(bd).massFraction  = 0.01;
 paramobj.(ne).(co).(ad).massFraction  = 0.01;
 
@@ -119,14 +125,24 @@ nls.timeStepSelector=StateChangeTimeStepSelector('TargetProps', {{'Control','E'}
 model.nonlinearTolerance = 1e-3*model.Control.Imax;
 %%
 % We use verbosity
-model.verbose = true;
+model.verbose = false;
 
 
 %% Run the simulation for the discharge
 
-[wellSols, states, report] = simulateScheduleAD(initstate, model, schedule, 'OutputMinisteps', true, 'NonLinearSolver', nls);
+[~, states] = simulateScheduleAD(initstate, model, schedule, 'OutputMinisteps', true, 'NonLinearSolver', nls);
 
 dischargeStates = states;
+allStates = states;
+
+E    = cellfun(@(x) x.Control.E, allStates);
+I    = cellfun(@(x) x.Control.I, allStates);
+time = cellfun(@(x) x.time, allStates);
+
+figure(99); hold on
+plot(time,E)
+grid on
+return
 
 %% Setup charge schedule
 
@@ -164,6 +180,9 @@ set(0, 'defaulttextfontsize', 18);
 E    = cellfun(@(x) x.Control.E, allStates);
 I    = cellfun(@(x) x.Control.I, allStates);
 time = cellfun(@(x) x.time, allStates);
+
+figure(99); hold on
+plot(time,E)
 
 %%
 %  We plot the voltage and current
