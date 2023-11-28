@@ -96,6 +96,9 @@ for k = 1:size(mfCases, 1)
     paramobj.(ne).(co).(bd).massFraction = bdmf;
     paramobj.(ne).(co).(ad).massFraction = admf;
 
+    % paramobj.(ne).(co).(gr).(itf).saturationConcentration =  28700;
+    % paramobj.(ne).(co).(si).(itf).saturationConcentration = 278000;
+
     paramobj = gen.updateBatteryInputParams(paramobj);
 
     model = Battery(paramobj);
@@ -120,11 +123,13 @@ for k = 1:size(mfCases, 1)
     % Initial state
     initstate = model.setupInitialState();
 
+    % initstate.(ne).(co).(si).(sd).c = 277000*ones(size(initstate.(ne).(co).(si).(sd).c));
+
     % Nonlinear solver
     nls = NonLinearSolver();
     nls.maxIterations = 10;
     nls.errorOnFailure = false;
-    nls.timeStepSelector=StateChangeTimeStepSelector('TargetProps', {{'Control','E'}}, 'targetChangeAbs', 0.03);
+    nls.timeStepSelector = StateChangeTimeStepSelector('TargetProps', {{'Control','E'}}, 'targetChangeAbs', 0.03);
     model.nonlinearTolerance = 1e-3*model.Control.Imax;
     model.verbose = false;
 
