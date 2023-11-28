@@ -18,8 +18,8 @@ mrstModule add ad-core matlab_bgl
 ne  = 'NegativeElectrode';
 pe  = 'PositiveElectrode';
 co  = 'Coating';
-gr = 'ActiveMaterial1'; % Graphite
-si = 'ActiveMaterial2'; % Silicon
+gr  = 'ActiveMaterial1'; % Graphite
+si  = 'ActiveMaterial2'; % Silicon
 bd  = 'Binder';
 ad  = 'ConductingAdditive';
 sd  = 'SolidDiffusion';
@@ -50,6 +50,8 @@ jsonstruct = mergeJsonStructs({jsonstruct_composite_material, ...
 % We do not consider the thermal model and remove the current collector
 jsonstruct.use_thermal = false;
 jsonstruct.include_current_collectors = false;
+
+jsonstruct.Control.rampupTime = 1;
 
 %%
 % Now, we update the paramobj with the properties of the mesh.
@@ -126,11 +128,8 @@ for k = 1:size(mfCases, 1)
     dt = total/n;
     step = struct('val', dt*ones(n, 1), 'control', ones(n, 1));
 
-    tup = 0.1; % rampup value for the current function, see rampupSwitchControl
-    srcfunc = @(time, I, E) rampupSwitchControl(time, tup, I, E, ...
-                                                model.Control.Imax, ...
-                                                model.Control.lowerCutoffVoltage);
-    control = struct('src', srcfunc, 'IEswitch', true);
+    srcfunc = model.Control.setupControlFunction();
+    control = struct('src', srcfunc, 'CCDischarge', true);
 
     schedule = struct('control', control, 'step', step);
 
@@ -202,7 +201,7 @@ initstate = states{end};
 srcfunc = @(time, I, E) rampupSwitchControl(time, tup, I, E, ...
                                             -model.Control.Imax, ...
                                             model.Control.upperCutoffVoltage);
-control = struct('src', srcfunc, 'IEswitch', true);
+control = struct('src', srcfunc, 'CCDischarge', true);
 schedule = struct('control', control, 'step', step);
 
 %% Run the simulation for the charge perios

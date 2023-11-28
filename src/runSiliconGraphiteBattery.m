@@ -156,7 +156,7 @@ initstate = states{end};
 srcfunc = @(time, I, E) rampupSwitchControl(time, tup, I, E, ...
                                             -model.Control.Imax, ...
                                             model.Control.upperCutoffVoltage);
-control = struct('src', srcfunc, 'IEswitch', true);
+control = struct('src', srcfunc, 'CCDischarge', true);
 schedule = struct('control', control, 'step', step);
 
 %% Run the simulation for the charge perios
