@@ -80,11 +80,11 @@
 \date{ LC-BAT-5 Cluster Scientific Symposium on Gen 3bBatteries Barcelona 2023-11-29}
 \author{%
   {\bf August Johansson},  Halvor Nilsen, Xavier Raynaud, Francesca Watson\\
-  SINTEF Digital\\
+  SINTEF Digital, Oslo, Norway\\
   \vspace{1mm}
   Simon Clark, Eibar Flores, Lorena Hendrix\\
   \vspace{-4pt}
-  SINTEF Industry}
+  SINTEF Industry, Trondheim, Norway}
 
 \begin{document}
 
@@ -385,29 +385,29 @@
 
 %% \end{frame}
 
-\begin{frame}{Comparison with other frameworks}
+%% \begin{frame}{Comparison with other frameworks}
 
-  % pybamm faster than Matlab battmo, but slower than julia battmmo
+%%   % pybamm faster than Matlab battmo, but slower than julia battmmo
 
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-      \item Good agreement with PyBaMM\footnotemark \
-        using the Chen 2020 model\footnotemark \ (isothermal, NMC 811 / SiGr).
-      \item For some applications P2D is adequate.
-      \item For some applications, richer spatial fidelity is of importance.
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \centering
-      \includegraphics[width=0.99\linewidth]{./images/pybamm.png}
-    \end{column}
-  \end{columns}
+%%   \begin{columns}
+%%     \begin{column}{0.5\textwidth}
+%%       \begin{itemize}
+%%       \item Good agreement with PyBaMM\footnotemark \
+%%         using the Chen 2020 model\footnotemark \ (isothermal, NMC 811 / SiGr).
+%%       \item For some applications P2D is adequate.
+%%       \item For some applications, richer spatial fidelity is of importance.
+%%       \end{itemize}
+%%     \end{column}
+%%     \begin{column}{0.5\textwidth}
+%%       \centering
+%%       \includegraphics[width=0.99\linewidth]{./images/pybamm.png}
+%%     \end{column}
+%%   \end{columns}
 
-\footnotetext[1]{Sulzer, et al.(2021). Journal of Open Research Software,9 (1), 14}
-\footnotetext[2]{Chen et al 2020 J. Electrochem. Soc. 167 080534}
+%% \footnotetext[1]{Sulzer, et al.(2021). Journal of Open Research Software,9 (1), 14}
+%% \footnotetext[2]{Chen et al 2020 J. Electrochem. Soc. 167 080534}
 
-\end{frame}
+%% \end{frame}
 
 \begin{frame}{Example: Multilayer LFP pouch cell (5 layers)}
 
@@ -464,13 +464,13 @@
 \begin{frame}{Calibration and optimization: Same mathematics!}
 
   \begin{itemize}
-  \item  Example of calibration (data assimilation, fitting, parameterization) problem:
+  \item  Example of {\bf calibration} (data assimilation, fitting, parameterization) problem:
     Minimize the difference between the experimental and
     simulated discharge curve
     \begin{align*}
       J(p) = \int_0^T |E(p) - E_\text{exp}|^2 \ dt
     \end{align*}
-  \item Example of optimization problem: Maximize the specific energy
+  \item Example of {\bf optimization} problem: Maximize the specific energy
     \begin{align*}
       J(p) = \frac{1}{m(p)} \int_0^T E(p)I  \  dt
     \end{align*}
@@ -532,31 +532,31 @@
 %% \end{frame}
 
 
-\begin{frame}{Electrode calibration in practice: exploit the possibility to split the parameter space}
-\footnotesize
-  1. Calibrate equilibrium parameters using {\bf low C} discharge curves.
+%% \begin{frame}{Electrode calibration in practice: exploit the possibility to split the parameter space}
+%% \footnotesize
+%%   1. Calibrate equilibrium parameters using {\bf low C} discharge curves.
 
-  \begin{itemize}
-  \item Neglect diffusion and transport processes as they are instantaneous.
-  \item Assume uniform electrode concentration, only dependent on time.
-  \item Fit thermodynamic parameters eg.\ stoichiometry at fully charged state, active material volume fraction, maximum Li conc.\ by solving an gradient-based optimization problem.
-  \item Cheap, since no PxD solve is needed.
-  \end{itemize}
+%%   \begin{itemize}
+%%   \item Neglect diffusion and transport processes as they are instantaneous.
+%%   \item Assume uniform electrode concentration, only dependent on time.
+%%   \item Fit thermodynamic parameters eg.\ stoichiometry at fully charged state, active material volume fraction, maximum Li conc.\ by solving an gradient-based optimization problem.
+%%   \item Cheap, since no PxD solve is needed.
+%%   \end{itemize}
 
-\ \\
+%% \ \\
 
-  2. Calibrate rate parameters using {\bf high C} discharge curves.
+%%   2. Calibrate rate parameters using {\bf high C} discharge curves.
 
-  \begin{itemize}
-  \item Use parameters from the low-rate calibration (1).
-  \item Use the optimization framework to fit parameters (eg.\ volumetric surface area, electrical conductivity) % grids in progress
-  \item This is a PDE-constrained optimization problem.
-  \item Adjoint-based optimization critical in the case of many parameters.
-  \end{itemize}
+%%   \begin{itemize}
+%%   \item Use parameters from the low-rate calibration (1).
+%%   \item Use the optimization framework to fit parameters (eg.\ volumetric surface area, electrical conductivity) % grids in progress
+%%   \item This is a PDE-constrained optimization problem.
+%%   \item Adjoint-based optimization critical in the case of many parameters.
+%%   \end{itemize}
 
-\end{frame}
+%% \end{frame}
 
-\begin{frame}{Calibration of an LNMO cell}
+\begin{frame}{Calibrate by splitting the parameter space}
 
   % \centering
   %% \includegraphics[width=0.47\linewidth]{./images/h1.png}\hspace{0.5cm}
